@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: DaemonSet
+metadata: 
+  name: myDaemon
+  namespace: lesson14
+  labels:
+    app: goapp
+spec: 
+  selector:
+    matchLabels:
+      app: goapp
+  template:
+    metadata: 
+      labels:
+        app: goapp
+    spec: 
+      containers:
+      - name: my_cont
+        image: 
+        ports:
+          - containerPort: 8080

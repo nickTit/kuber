@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: depl2
+  namespace: lesson14
+  labels:
+    app: goapp
+
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: goapp
+  template:
+    metadata:
+      labels:
+        app: goapp
+    spec:
+
+      containers:
+      - name: web
+        image:
+        env:
+          - name: SECRETNO
+            valueFrom:
+              secretKeyRef:
+                name: my_secret
+                key: password
+
+        ports:
+        - containerPort: 8080
+
+

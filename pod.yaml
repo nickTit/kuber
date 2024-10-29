@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+  namespace: lesson14
+  label:
+    app: php-app
+spec:
+  containers:
+    - name: my-container
+      image:
+      args: # здесь типо укахываются аргументы
+        livenessProbe: # вот здесь указываем именно livenessProbe что и является инструментом, чтобы проверять, жив ли под
+          httpGet: # именно хттп запрос
+            path: /healthz # путь по которому будет направлен запрос
+            port: 80
+            httpHeaders: # здесь пары ключ-значение которые будут отправляться вместе с запросом, можно юзать для авторизации и тп
+              - name: authorized-password
+                value: '12345'
+        initialDelaySeconds: 3 # задержка после первого запуска контейнера
+        periodSeconds: 2 # каждые 2 секунды контейнер будет проверяться
+

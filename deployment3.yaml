@@ -1,0 +1,48 @@
+apiVersion: apps/v1  # указываем версию приложения
+kind: Deployment # тип файла (деплоймент, под, сервис, неймспейс, секрет и тд)
+metadata: # тут укаызваешь имя, неймспейс и лейблы
+  name: depl3 #
+  namespace: lesson14 #
+  labels: #
+    app: goapp # даем приложению метку app=goapp
+
+spec: # здесь указываешь спецификацию всего
+  replicas: 4
+  selector: # в селекторе пишешь, чем будет управлять конкретно этот деплоймент =
+    matchLabels: # управляет только приложением с меткой апп=гоапп
+      app: goapp
+  template: # здесь после spec ты указываешь поды, т.е. просто описание файла пода
+    metadata: 
+      labels: #
+        app: goapp
+    spec: #
+      containers: #
+      - name: web2
+        image: nikitosikti/my_test_php
+        ports:
+          - containerPort: 80 # должен совпадать с targetPort в сервисе, чтобы на него передавали трафик
+        env: # описание переменных окружения
+          - name: COLORBAD
+            valueFrom: # 
+              configMapKeyRef: # берем значение из конфигмапа который раньше сохдали
+                name: conf2 # имя конфигмапа, откуда берем переменную
+                key: color # имя переменной, которую берем
+          - name: COLORGOOD
+            valueFrom:
+              configMapKeyRef:
+                name: conf2
+                key: color2 
+          - name: COLORFROMSECRET
+            valueFrom:
+              secretKeyRef: # тут берем значение не из конфигмапа а из секрета
+                name: my-secret
+                key:  password 
+
+        volumeMounts: # монтируем в контейнер том
+        - name: test-config # любое имя
+          mountPath: "/etc/ssl/certs/" # путь куда в контейнер том монтируется
+          readOnly: true
+      volumes:
+        - name: test-config # то же самое любое имя
+          configMap: # берем значение конкретно из конфигмапа
+            name: conf2 # из какого конфигмапа берем значение

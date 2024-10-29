@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: conf2
+  namespace: lesson14
+data:
+  color: green
+  color2: red
